@@ -4,7 +4,7 @@ import path from "path"
 import dotenv from "dotenv";
 dotenv.config();
 
-import { generateFromPrompt, generatePdfSummary } from "./gemini.js";
+import { generateFromPrompt, generatePdfSummary, summaryFromPdfUri } from "./gemini.js";
 import { marked } from "marked";
 
 const port = process.env.PORT || 4000
@@ -27,6 +27,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+
 
 
 app.get('/', (req, res) => {
@@ -53,6 +56,16 @@ app.post('/chat', upload.single('document'), async(req, res) => {
     } catch (error) {
         console.log(error)
         res.render('error', { message: "Something went wrong!"})
+    }
+});
+
+
+app.post('/summarize', async(req, res) => {
+    try {
+        const data = await summaryFromPdfUri()
+        res.json({data})
+    } catch (error) {
+        console.log("Error while summarizing ....", error)        
     }
 });
 

@@ -1,15 +1,22 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
+import { VertexAI } from "@google-cloud/vertexai";
 import dotenv from "dotenv";
 dotenv.config();
 
 const apiKey = process.env.API_KEY
+const projectId = process.env.PROJECT_ID
+
 
 // Initialize GoogleGenerativeAI with your API_KEY.
 const googleAI = new GoogleGenerativeAI(apiKey);
 
 // Initialize GoogleAIFileManager with your API_KEY.
 const fileManager = new GoogleAIFileManager(apiKey);
+
+// Initialize VertexAI with your PROJECT_ID.
+const vertexAI = new VertexAI({ project: projectId, location: 'us-central1' });
+
 
 const geminiConfig = {
     temperature: 0.9,
@@ -24,9 +31,13 @@ const geminiPromptModel = googleAI.getGenerativeModel({
 });
 
 const geminiPdfModel = googleAI.getGenerativeModel({
-    // Choose a Gemini model.
     model: "gemini-1.5-flash",
 });
+
+const generativeModel = vertexAI.getGenerativeModel({
+    model: 'gemini-1.5-flash-001',
+});
+
 
 
 export const generateFromPrompt = async (prompt) => {
@@ -56,10 +67,38 @@ export const generatePdfSummary = async (fileName, prompt) => {
             { text: prompt || "Can you summarize this document as a bulleted list." },
         ]);
 
-        // Output the generated text to the console
         const response = result.response.text();
         return response
     } catch (error) {
         console.log("response error", error);
+    }
+}
+
+
+export const summaryFromPdfUri = async() => {
+    try {
+       
+        const filePart = {
+            file_data: {
+                file_uri: 'gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf',
+                mime_type: 'application/pdf',
+            },
+        };
+        const textPart = {
+            text: `
+    You are a very professional document summarization specialist.
+    Please summarize the given document.`,
+        };
+
+        const request = {
+            contents: [{ role: 'user', parts: [filePart, textPart] }],
+        };
+
+        const resp = await generativeModel.generateContent(request);
+        const contentResponse = resp.response;
+        console.log(JSON.stringify(contentResponse));
+        return JSON.stringify(contentResponse)
+    } catch (error) {
+        
     }
 }
