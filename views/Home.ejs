@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefify - A playful platform making information brief</title>
+    <link rel="icon" href="/logo.png" type="image/icon type">
+    <script
+        src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+</head>
+
+<body class="flex justify-center items-center w-full h-screen bg-slate-100">
+    <div class="text-center w-full space-y-5 p-4">
+
+        <h2 class="text-red-800 text-3xl font-bold">What can I help with?</h2>
+
+        <!-- Form to support file upload -->
+        <form action="/chat" method="POST" enctype="multipart/form-data" class="space-y-5">
+            <div class="flex justify-between mb-6 shadow bg-gray-100 md:w-1/2 mx-auto rounded-full">
+
+                <!-- Input for the prompt text -->
+                <input type="text" name="prompt" placeholder="Enter the prompt" autocomplete="off"
+                    class="rounded-full bg-gray-100 w-full ml-3 border-0 outline-none focus:outline-none focus:ring-0 focus:border-0">
+
+                <!-- Submit button with icon -->
+                <button type="submit"
+                    class="py-1 px-3 m-1 font-semibold bg-gray-300 hover:bg-gray-200 border text-white rounded-full">
+                    <img src="/send-icon.png" alt="Send" class="w-5 text-white">
+                </button>
+            </div>
+
+            <!-- Hidden file input for PDF -->
+            <input type="file" name="document" accept="application/pdf" class="hidden" id="file-upload">
+
+            <!-- Box to display the selected file name -->
+            <div id="fileBox" class="hidden p-3 border border-gray-300 rounded-md shadow-sm bg-white w-fit mx-auto">
+                <p id="fileName" class="text-gray-700"></p>
+            </div>
+
+            <!-- Label to trigger file upload -->
+            <label for="file-upload"
+                class="py-1.5 px-5 border bg-white shadow hover:bg-gray-200 text-neutral-600 rounded-full cursor-pointer mx-auto flex items-center w-fit">
+                <img src="/pdf-icon2.png" alt="pdf" class="w-6 h-auto">
+                <div class="pl-2 text-start">
+                    <h4 class="text-sm font-semibold "> Upload file ( PDF )</h4>
+                    <h4 class="text-xs -mt-0.5"> Max size - 20MB</h4>
+                </div>
+            </label>
+
+        </form>
+
+    </div>
+
+    <script>
+        // Reference to the input file and file box elements
+        const fileInput = document.getElementById('file-upload');
+        const fileName = document.getElementById('fileName');
+        const fileBox = document.getElementById('fileBox');
+
+        fileInput.addEventListener('change', function () {
+            const file = fileInput.files[0]; // Get the selected file
+            if (file) {
+                // Show the file name in the box
+                fileName.textContent = `Selected file: ${file.name}`;
+                fileBox.style.display = 'block'; // Make the box visible
+            } else {
+                fileName.textContent = '';
+                fileBox.style.display = 'none'; // Hide the box if no file is selected
+            }
+        });
+    </script>
+</body>
+
+</html>
