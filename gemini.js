@@ -77,10 +77,10 @@ export const generatePdfSummary = async (fileName, prompt) => {
 
 export const summaryFromPdfUri = async() => {
     try {
-       
+       console.log("heyyyyyyy")
         const filePart = {
             file_data: {
-                file_uri: 'gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf',
+                file_uri: 'https://storage.googleapis.com/moksh-dev/word-doc.docx',
                 mime_type: 'application/pdf',
             },
         };
@@ -97,8 +97,11 @@ export const summaryFromPdfUri = async() => {
         const resp = await generativeModel.generateContent(request);
         const contentResponse = resp.response;
         console.log(JSON.stringify(contentResponse));
-        return JSON.stringify(contentResponse)
-    } catch (error) {
+
+        console.log(contentResponse);
         
+        return contentResponse
+    } catch (error) {
+        console.log(error)
     }
 }

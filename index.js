@@ -6,6 +6,7 @@ dotenv.config();
 
 import { generateFromPrompt, generatePdfSummary, summaryFromPdfUri } from "./gemini.js";
 import { marked } from "marked";
+import extractTextFromDocuments from "./utils/service.js";
 
 const port = process.env.PORT || 4000
 const app = express();
@@ -29,9 +30,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-
-
-
 app.get('/', (req, res) => {
     res.render('home');
 });
@@ -40,14 +38,14 @@ app.get('/chat', (req, res) => {
     res.render('conversation');
 });
 
-app.post('/chat', upload.single('document'), async(req, res) => {
+app.post('/chat', upload.single('document'), async (req, res) => {
     try {
         let { prompt } = req.body
         let result = ""
         if (req.file) {
             let { filename, originalname } = req.file
             result = await generatePdfSummary(filename, prompt)
-            prompt = originalname + " " + (prompt || "summarizing document ..." )
+            prompt = originalname + " " + (prompt || "summarizing document ...")
         } else {
             result = await generateFromPrompt(prompt)
         }
@@ -55,20 +53,31 @@ app.post('/chat', upload.single('document'), async(req, res) => {
         res.render('conversation', { question: prompt, answer: htmlContent });
     } catch (error) {
         console.log(error)
-        res.render('error', { message: "Something went wrong!"})
+        res.render('error', { message: "Something went wrong!" })
     }
 });
 
 
-app.post('/summarize', async(req, res) => {
+app.post('/summarize', async (req, res) => {
     try {
         const data = await summaryFromPdfUri()
-        res.json({data})
+        res.json({ data })
     } catch (error) {
-        console.log("Error while summarizing ....", error)        
+        console.log("Error while summarizing ....", error)
     }
 });
 
+app.get('/extract', async (req, res) => {
+    try {
+        const { url, prompt } = req.query
+        let text = await extractTextFromDocuments(url); 
+        text += prompt || "Can you summarize this document as a bulleted list." 
+        const result = await generateFromPrompt(text)
+        res.json({ result }); 
+    } catch (error) {
+        console.log("Error while summarizing . ..........", error)
+    }
+});
 
 
 app.listen(port, () => {
