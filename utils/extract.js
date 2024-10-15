@@ -2,6 +2,44 @@ import axios from "axios";
 import officeParser from 'officeparser';
 
 
+export const getFileExtension  =  (url) => {
+    const fileExtension = url?.split('.').pop().split(/\#|\?/)[0];
+    console.log("this is file url type : ", fileExtension)
+    let fileType;
+    switch (fileExtension) {
+        case 'pdf':
+            fileType = 'application/pdf';
+            break;
+        case 'docx':
+            fileType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            break;
+        case 'pptx':
+            fileType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+            break;
+        default:
+            fileType = 'Unknown File Type';
+    }
+    console.log("this is file mime type : ", fileType)
+
+    return fileType
+}
+
+
+
+
+
+export const getFileMimeType = async(url) => {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        const contentType = response.headers.get('Content-Type');
+        return contentType;
+    } catch (error) {
+        console.error("Error fetching the URL:", error);
+        return null;
+    }
+}
+
+
 const extractTextFromDocuments = async (url) => {
     try {
         const response = await axios({

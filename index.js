@@ -4,9 +4,9 @@ import path from "path"
 import dotenv from "dotenv";
 dotenv.config();
 
-import { generateFromPrompt, generatePdfSummary, summaryFromPdfUri } from "./gemini.js";
+import { generateFromPrompt, generatePdfSummary, summaryFromPdfUri } from "./utils/gemini.js";
 import { marked } from "marked";
-import extractTextFromDocuments from "./utils/extract.js";
+import extractTextFromDocuments, { getFileExtension } from "./utils/extract.js";
 
 const port = process.env.PORT || 4000
 const app = express();
@@ -15,7 +15,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-
+    
 
 // Configure multer for file storage
 const storage = multer.diskStorage({
@@ -69,9 +69,12 @@ app.post('/chat', upload.single('document'), async (req, res) => {
 });
 
 
-app.post('/summarize', async (req, res) => {
+app.get('/summarize', async (req, res) => {
     try {
-        const data = await summaryFromPdfUri()
+        const { url } = req.query
+        console.log("this is body part +> ", req.body)
+        const mimeTyoe =  getFileExtension(url)
+        const data = await summaryFromPdfUri(url, mimeTyoe)
         res.json({ data })
     } catch (error) {
         console.log("Error while summarizing ....", error)

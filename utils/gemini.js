@@ -75,13 +75,12 @@ export const generatePdfSummary = async (fileName, prompt) => {
 }
 
 
-export const summaryFromPdfUri = async() => {
+export const summaryFromPdfUri = async (url, mimeType) => {
     try {
-       console.log("heyyyyyyy")
         const filePart = {
             file_data: {
-                file_uri: 'https://storage.googleapis.com/moksh-dev/word-doc.docx',
-                mime_type: 'application/pdf',
+                file_uri: url,
+                mime_type: mimeType,
             },
         };
         const textPart = {
@@ -99,7 +98,7 @@ export const summaryFromPdfUri = async() => {
         console.log(JSON.stringify(contentResponse));
 
         console.log(contentResponse);
-        
+
         return contentResponse
     } catch (error) {
         console.log(error)
