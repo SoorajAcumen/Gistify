@@ -6,7 +6,7 @@ dotenv.config();
 
 import { generateFromPrompt, generatePdfSummary, summaryFromPdfUri } from "./gemini.js";
 import { marked } from "marked";
-import extractTextFromDocuments from "./utils/service.js";
+import extractTextFromDocuments from "./utils/extract.js";
 
 const port = process.env.PORT || 4000
 const app = express();
@@ -40,20 +40,31 @@ app.get('/chat', (req, res) => {
 
 app.post('/chat', upload.single('document'), async (req, res) => {
     try {
-        let { prompt } = req.body
+        let { prompt, url } = req.body
         let result = ""
-        if (req.file) {
+
+        if (url) {
+            let text = await extractTextFromDocuments(url);
+            text += prompt || "Can you summarize this document as a bulleted list."
+            result = await generateFromPrompt(text)
+            prompt = url + " - " + (prompt || "Summarizing the document ...")
+
+        } else if (req.file) {
+
             let { filename, originalname } = req.file
             result = await generatePdfSummary(filename, prompt)
-            prompt = originalname + " " + (prompt || "summarizing document ...")
+            prompt = originalname + " - " + (prompt || "Summarizing the document ...")
+
         } else {
             result = await generateFromPrompt(prompt)
         }
         const htmlContent = marked(result);
+        console.log("this is question : ", prompt)
         res.render('conversation', { question: prompt, answer: htmlContent });
+
     } catch (error) {
-        console.log(error)
-        res.render('error', { message: "Something went wrong!" })
+        console.log(error?.["OfficeParser"])
+        res.render('error', { message: "Error occured while reading the file buffers" })
     }
 });
 
@@ -64,18 +75,20 @@ app.post('/summarize', async (req, res) => {
         res.json({ data })
     } catch (error) {
         console.log("Error while summarizing ....", error)
+        res.status(500).json({ error })
     }
 });
 
 app.get('/extract', async (req, res) => {
     try {
         const { url, prompt } = req.query
-        let text = await extractTextFromDocuments(url); 
-        text += prompt || "Can you summarize this document as a bulleted list." 
+        let text = await extractTextFromDocuments(url);
+        text += prompt || "Can you summarize this document as a bulleted list."
         const result = await generateFromPrompt(text)
-        res.json({ result }); 
+        res.status(200).json({ result });
     } catch (error) {
         console.log("Error while summarizing . ..........", error)
+        res.status(500).json({ error })
     }
 });
 
