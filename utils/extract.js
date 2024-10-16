@@ -4,7 +4,6 @@ import officeParser from 'officeparser';
 
 export const getFileExtension  =  (url) => {
     const fileExtension = url?.split('.').pop().split(/\#|\?/)[0];
-    console.log("this is file url type : ", fileExtension)
     let fileType;
     switch (fileExtension) {
         case 'pdf':
@@ -19,7 +18,6 @@ export const getFileExtension  =  (url) => {
         default:
             fileType = 'Unknown File Type';
     }
-    console.log("this is file mime type : ", fileType)
 
     return fileType
 }

@@ -10,57 +10,78 @@
         src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
 </head>
 
-<body class="flex justify-center items-center w-full h-screen bg-slate-100">
-    <div class="text-center w-full space-y-3 p-4">
+<body>
+    <div id="google_translate_element"></div>
+    <div class="flex justify-center items-center w-full h-[80vh] bg-slate-100">
 
-        <h2 class="text-red-800 text-3xl font-bold">What can I help with?</h2>
 
-        <!-- Form to support file upload -->
-        <form action="/chat" method="POST" enctype="multipart/form-data" class="space-y-5">
-            <div class="flex justify-between mb-6 shadow bg-gray-100 md:w-1/2 mx-auto rounded-full">
+        <div class="text-center w-full space-y-3 p-4">
 
-                <!-- Input for the prompt text -->
-                <input type="text" name="prompt" placeholder="Enter the prompt" autocomplete="off"
-                    class="rounded-full bg-gray-100 w-full ml-3 border-0 outline-none focus:outline-none focus:ring-0 focus:border-0">
+            <h2 class="text-red-800 text-3xl font-bold">What can I help with?</h2>
 
-                <!-- Submit button with icon -->
-                <button type="submit"
-                    class="py-1 px-3 m-1 font-semibold bg-gray-300 hover:bg-gray-200 hover:border-black border transition duration-300 ease-in-out  text-white rounded-full">
-                    <img src="/send-icon.png" alt="Send" class="w-5 text-white">
-                </button>
-            </div>
+            <!-- Form to support file upload -->
+            <form action="/chat" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <div class="flex justify-between mb-6 shadow bg-gray-100 md:w-1/2 mx-auto rounded-full">
 
-            <!-- Hidden file input for PDF -->
-            <input type="file" name="document" accept="application/pdf" class="hidden" id="file-upload">
+                    <!-- Input for the prompt text -->
+                    <input type="text" name="prompt" placeholder="Enter the prompt" autocomplete="off"
+                        class="rounded-full bg-gray-100 w-full ml-3 border-0 outline-none focus:outline-none focus:ring-0 focus:border-0">
 
-            <!-- Box to display the selected file name -->
-
-            <div>
-                <div class="flex border border-gray-500 w-fit mx-auto rounded-md pr-3">
-                    <div class="border-r border-gray-500 px-2">Url</div>
-                    <input type="text" name="url"
-                        class="py-0 border-0 outline-none focus:outline-none focus:ring-0 focus:border-0">
+                    <!-- Submit button with icon -->
+                    <button type="submit"
+                        class="py-1 px-3 m-1 font-semibold bg-gray-300 hover:bg-gray-200 hover:border-black border transition duration-300 ease-in-out  text-white rounded-full">
+                        <img src="/send-icon.png" alt="Send" class="w-5 text-white">
+                    </button>
                 </div>
-                <p class="text-xs"> ( docx, pptx, xlsx, pdf, ods, odp, odt )</p>
-            </div>
 
-            <div id="fileBox" class="hidden p-3 border border-gray-300 rounded-md shadow-sm bg-white w-fit mx-auto">
-                <p id="fileName" class="text-gray-700"></p>
-            </div>
+                <!-- Hidden file input for PDF -->
+                <input type="file" name="document" accept="application/pdf" class="hidden" id="file-upload">
 
-            <!-- Label to trigger file upload -->
-            <label for="file-upload"
-                class="py-1.5 px-5 border bg-white shadow hover:bg-gray-200 text-neutral-600 rounded-full cursor-pointer mx-auto flex items-center w-fit">
-                <img src="/pdf-icon2.png" alt="pdf" class="w-6 h-auto">
-                <div class="pl-2 text-start">
-                    <h4 class="text-sm font-semibold "> Upload file ( PDF )</h4>
-                    <h4 class="text-xs -mt-0.5"> Max size - 20MB</h4>
+                <!-- Box to display the selected file name -->
+
+                <div>
+                    <div class="flex border border-gray-500 w-fit mx-auto rounded-md pr-3">
+                        <div class="border-r border-gray-500 px-2">Url</div>
+                        <input type="text" name="url"
+                            class="py-0 border-0 outline-none focus:outline-none focus:ring-0 focus:border-0">
+                    </div>
+                    <p class="text-xs"> ( docx, pptx, xlsx, pdf, ods, odp, odt )</p>
                 </div>
-            </label>
 
-        </form>
+                <div id="fileBox" class="hidden p-3 border border-gray-300 rounded-md shadow-sm bg-white w-fit mx-auto">
+                    <p id="fileName" class="text-gray-700"></p>
+                </div>
+
+                <!-- Label to trigger file upload -->
+                <label for="file-upload"
+                    class="py-1.5 px-5 border bg-white shadow hover:bg-gray-200 text-neutral-600 rounded-full cursor-pointer mx-auto flex items-center w-fit">
+                    <img src="/pdf-icon2.png" alt="pdf" class="w-6 h-auto">
+                    <div class="pl-2 text-start">
+                        <h4 class="text-sm font-semibold "> Upload file ( PDF )</h4>
+                        <h4 class="text-xs -mt-0.5"> Max size - 20MB</h4>
+                    </div>
+                </label>
+
+            </form>
+
+        </div>
 
     </div>
+    <div>
+
+    </div>
+
+
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 
     <script>
         // Reference to the input file and file box elements
